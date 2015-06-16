@@ -1,4 +1,4 @@
-__author__ = 'bolek_000'
+__author__ = 'mwitas'
 
 from graph import Edge
 

@@ -2,7 +2,7 @@ from adjacencylist import AdjacencyList
 from fulkersonedge import FulkersonEdge
 from breadthfirstsearch import *
 
-__author__ = 'bolek_000'
+__author__ = 'mwitas'
 
 
 def define_edges():
