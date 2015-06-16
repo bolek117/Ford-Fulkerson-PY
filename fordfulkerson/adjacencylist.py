@@ -1,12 +1,12 @@
 __author__ = 'bolek_000'
 
-from graph import Edge
+from fordfulkerson import FulkersonEdge
 
 
 class AdjacencyList:
     """
     Adjacency list class
-    :type lst: list[Edge]
+    :type lst: list[FulkersonEdge]
     :type known_nodes : list[int]
     :type nodes_count: int
     :type edges_count: int
@@ -20,26 +20,12 @@ class AdjacencyList:
     def __init__(self):
         self.lst = []
 
-    def get_neighbours(self, node, only_available=True):
-        """
-
-        :param node: int
-        :return list[Edge]
-        """
-        result = []
-        for edge in self.lst:
-            is_start = edge.start_node == node
-            if (is_start or edge.is_available) and (is_start or not only_available):
-                result.append(edge)
-
-        return result
-
     def add_edge(self, data_row):
         """
 
         :param data_row: list[int]
         """
-        self.lst.append(Edge(data_row[0], data_row[1], data_row[2]))
+        self.lst.append(FulkersonEdge(data_row[0], data_row[1], data_row[2]))
         self.edges_count += 1
 
         if data_row[0] not in self.known_nodes:
@@ -51,7 +37,7 @@ class AdjacencyList:
     def hide_edge(self, edge):
         """
 
-        :param edge: Edge
+        :param edge: FulkersonEdge
         """
         for e in self.lst:
             if e == edge:
@@ -60,7 +46,7 @@ class AdjacencyList:
 
         return False
 
-    def hide_edge_by_id(self, start_node, end_node):
+    def hide_edge_by_ids(self, start_node, end_node):
         """
 
         :param start_node: int
@@ -68,12 +54,25 @@ class AdjacencyList:
         :return: bool
         """
 
+        edge = self.get_edge_by_ids(start_node, end_node)
+        if edge is not None:
+            edge.is_available = False
+            return True
+        else:
+            return False
+
+    def get_edge_by_ids(self, start_node, end_node):
+        """
+
+        :param start_node: int
+        :param end_node: int
+        :return: FulkersonEdge
+        """
         for e in self.lst:
             if e.start_node == start_node and e.end_node == end_node:
-                e.is_available = False
-                return True
+                return e
 
-        return False
+        return None
 
     def get_routes(self):
         """

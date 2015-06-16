@@ -1,5 +1,5 @@
-from fordfulkerson.adjacencylist import *
-from breadthfirstsearch import *
+from adjacencylist import *
+from fordfulkerson import *
 
 __author__ = 'bolek_000'
 
@@ -43,7 +43,36 @@ def define_edges():
 
 def main():
     edges = define_edges()
+    # worker = Worker(edges)
+
+    """
+    :var path : list[int]
+    """
+    # edges.hide_edge(Edge(0, 1))
+    # edges.hide_edge(Edge(0,2))
     path = bfs_paths(edges.get_routes(), 0, edges.last_node)
+
+    if path is not None:
+        edge = edges.get_edge_by_ids(path[0], path[1])
+        min_flow = edge.augmenting_flow
+
+        elements = len(path)-1
+        # Find min flow on path
+        for i in xrange(elements):
+            node_start = path[i]
+            node_end = path[i+1]
+
+            edge = edges.get_edge_by_ids(node_start, node_end)
+
+            flow = edge.augmenting_flow
+            if flow < min_flow:
+                min_flow = edge.augmenting_flow
+
+        # subtract minimum flow from all resudial flows
+        # for i in xrange(elements)
+        #
+        pass
+
     pass
 
 

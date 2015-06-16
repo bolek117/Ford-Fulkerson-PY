@@ -16,3 +16,5 @@ def bfs_paths(graph, start, goal):
                 return path
             else:
                 queue.append((next_point, path + [next_point]))
+
+    return None
