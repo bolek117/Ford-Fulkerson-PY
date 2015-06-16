@@ -1,6 +1,6 @@
 __author__ = 'bolek_000'
 
-from fordfulkerson import FulkersonEdge
+from fulkersonedge import FulkersonEdge
 
 
 class AdjacencyList:

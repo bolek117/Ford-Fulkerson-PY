@@ -1,5 +1,6 @@
-from adjacencylist import *
-from fordfulkerson import *
+from adjacencylist import AdjacencyList
+from fulkersonedge import FulkersonEdge
+from breadthfirstsearch import *
 
 __author__ = 'bolek_000'
 
@@ -20,7 +21,7 @@ def define_edges():
             [5, 4, 2],
             [5, 8, 3],
             [6, 7, 2],
-            [6, 9, 9],
+            [6, 9, 1],
             [7, 9, 9],
             [7, 10, 1],
             [8, 7, 3],
@@ -42,39 +43,72 @@ def define_edges():
 
 
 def main():
-    edges = define_edges()
-    # worker = Worker(edges)
+    adj_list = define_edges()
+    # worker = Worker(adj_list)
+
+    max_flow = 0
 
     """
     :var path : list[int]
     """
-    # edges.hide_edge(Edge(0, 1))
-    # edges.hide_edge(Edge(0,2))
-    path = bfs_paths(edges.get_routes(), 0, edges.last_node)
+    # adj_list.hide_edge(Edge(0, 1))
+    # adj_list.hide_edge(Edge(0,2))
 
-    if path is not None:
-        edge = edges.get_edge_by_ids(path[0], path[1])
+    iteration = 0
+    while True:
+        path = bfs_paths(adj_list.get_routes(), 0, adj_list.last_node)
+
+        # Augmenting path not found
+        if path is None:
+            print('No augmenting paths found (iteration {})'.format(iteration))
+            break
+
+        """
+        :type edges : list[FulkersonEdge]
+        """
+        edges = []
+
+        # Get first edge from path
+        edge = adj_list.get_edge_by_ids(path[0], path[1])
+
+        # Save found edge for speedup
+        edges.append(edge)
+
+        # Define initial min_flow
         min_flow = edge.augmenting_flow
 
+        # Save number of elements for speedup
         elements = len(path)-1
+
         # Find min flow on path
         for i in xrange(elements):
             node_start = path[i]
             node_end = path[i+1]
 
-            edge = edges.get_edge_by_ids(node_start, node_end)
+            edge = adj_list.get_edge_by_ids(node_start, node_end)
+            edges.append(edge)
 
             flow = edge.augmenting_flow
             if flow < min_flow:
                 min_flow = edge.augmenting_flow
 
-        # subtract minimum flow from all resudial flows
-        # for i in xrange(elements)
-        #
-        pass
+        # Add actual min_flow to value of maximum flow
+        max_flow += min_flow
 
-    pass
+        print('Path {} with flow {}, actual max flow is {}'.format(path, min_flow, max_flow))
 
+        # subtract minimum flow from all residual flows
+        for edge in edges:
+            assert isinstance(edge, FulkersonEdge)
+            edge.augmenting_flow -= min_flow
+            edge.residual_flow += min_flow
+
+            if edge.augmenting_flow <= 0:
+                edge.is_available = False
+
+        iteration += 1
+
+    print('Found max flow: {}'.format(max_flow))
 
 
 if __name__ == "__main__":

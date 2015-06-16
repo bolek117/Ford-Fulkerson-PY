@@ -1,7 +1,6 @@
 __author__ = 'bolek_000'
 
 from graph import Edge
-from breadthfirstsearch import bfs_paths
 
 
 class FulkersonEdge(Edge):
